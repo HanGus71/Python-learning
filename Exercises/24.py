@@ -18,3 +18,4 @@ courses=[{"name":"kurs a","hp":3,"rate":20},
 print(sort_by_hp(courses))
 print(sort_by_rate(courses))
 print(sort_by_name(courses))
+print()
