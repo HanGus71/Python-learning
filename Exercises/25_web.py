@@ -12,10 +12,6 @@
 import streamlit as st
 from supabase import create_client
 
-supabase = create_client(
-    st.secrets["SUPABASE_URL"],
-    st.secrets["SUPABASE_KEY"]
-)
 
 
 # --------------------------------------------------
@@ -42,7 +38,15 @@ def calc_study_hours(rate):
     return rate * 40 / 100
 
 def add_course_to_database(course):
-    supabase.table("courses").insert(course).execute()
+    response = (
+        supabase
+        .table("courses")
+        .insert(course)
+        .execute()
+    )
+
+    return response.data[0]
+
 
 def update_course_in_database(course_id, rate):
     hours = calc_study_hours(rate)
@@ -197,9 +201,9 @@ if st.button(
             "hours": hours
         }
 
-        add_course_to_database(course_info)
+        saved_course = add_course_to_database(course_info)
 
-        st.session_state.courses.append(course_info)
+        st.session_state.courses.append(saved_course)
 
         st.success(
             f"{course} har registrerats!"
@@ -334,22 +338,28 @@ if st.session_state.courses:
 
             if course["course"] == selected_course:
 
-                course["rate"] = new_rate
-                course["hours"] = calc_study_hours(new_rate)
+response = update_course_in_database(
+    course["id"],
+    new_rate
+)
 
-                response = update_course_in_database(
-                    course["id"],
-                    new_rate
-                )
+if response.data:
 
-                st.write(response.data)
+    course["rate"] = new_rate
+    course["hours"] = calc_study_hours(new_rate)
 
-                st.success(
-                    f"{selected_course} är ändrad till "
-                    f"{new_rate} %."
-                )
+    st.success(
+        f"{selected_course} är ändrad till "
+        f"{new_rate} %."
+    )
 
-                st.rerun()
+    st.rerun()
+
+else:
+
+    st.error(
+        f"Kunde inte uppdatera kursen med ID {course['id']}."
+    )
 
 else:
 
