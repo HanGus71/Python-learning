@@ -21,6 +21,9 @@ supabase = create_client(
     st.secrets["SUPABASE_KEY"]
 )
 
+def add_course_to_database(course):
+    supabase.table("courses").insert(course).execute()
+
 # --------------------------------------------------
 # Inställningar
 # --------------------------------------------------
@@ -36,7 +39,7 @@ supabase = create_client(
     st.secrets["SUPABASE_KEY"]
 )
 
-st.success("Supabase är ansluten!")
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_PATH = os.path.join(BASE_DIR, "courses.json")
@@ -60,12 +63,8 @@ def calc_total_hours(courses):
 
 
 def load_courses():
-    try:
-        with open(FILE_PATH, "r") as file:
-            return json.load(file)
-
-    except FileNotFoundError:
-        return []
+    response = supabase.table("courses").select("*").execute()
+    return response.data
 
 
 def save_courses(courses):
@@ -194,9 +193,9 @@ if st.button(
             "hours": hours
         }
 
-        st.session_state.courses.append(course_info)
+        add_course_to_database(course_info)
 
-        save_courses(st.session_state.courses)
+        st.session_state.courses.append(course_info)
 
         st.success(
             f"{course} har registrerats!"
