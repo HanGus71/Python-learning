@@ -46,11 +46,6 @@ supabase = create_client(
 )
 
 
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FILE_PATH = os.path.join(BASE_DIR, "courses.json")
-
-
 # --------------------------------------------------
 # Funktioner
 # --------------------------------------------------
@@ -342,7 +337,7 @@ if st.session_state.courses:
                 )
 
                 st.write(response.data)
-                
+
                 st.success(
                     f"{selected_course} är ändrad till "
                     f"{new_rate} %."
