@@ -23,10 +23,12 @@ def add_course_to_database(course):
 def update_course_in_database(course_id, rate):
     hours = calc_study_hours(rate)
 
-    supabase.table("courses").update({
+    response = supabase.table("courses").update({
         "rate": rate,
         "hours": hours
     }).eq("id", course_id).execute()
+
+    return response
 
 # --------------------------------------------------
 # Inställningar
@@ -334,11 +336,13 @@ if st.session_state.courses:
                 course["rate"] = new_rate
                 course["hours"] = calc_study_hours(new_rate)
 
-                update_course_in_database(
+                response = update_course_in_database(
                     course["id"],
                     new_rate
                 )
 
+                st.write(response.data)
+                
                 st.success(
                     f"{selected_course} är ändrad till "
                     f"{new_rate} %."
