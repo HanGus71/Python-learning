@@ -329,37 +329,38 @@ if st.session_state.courses:
         )
 
 
-    if st.button(
-        "✏️ Ändra studietakt",
-        use_container_width=True
-    ):
+if st.button(
+    "✏️ Ändra studietakt",
+    use_container_width=True
+):
 
-        for course in st.session_state.courses:
+    for course in st.session_state.courses:
 
-            if course["course"] == selected_course:
+        if course["course"] == selected_course:
 
-response = update_course_in_database(
-    course["id"],
-    new_rate
-)
+            response = update_course_in_database(
+                course["id"],
+                new_rate
+            )
 
-if response.data:
+            if response.data:
 
-    course["rate"] = new_rate
-    course["hours"] = calc_study_hours(new_rate)
+                course["rate"] = new_rate
+                course["hours"] = calc_study_hours(new_rate)
 
-    st.success(
-        f"{selected_course} är ändrad till "
-        f"{new_rate} %."
-    )
+                st.success(
+                    f"{selected_course} är ändrad till "
+                    f"{new_rate} %."
+                )
 
-    st.rerun()
+                st.rerun()
 
-else:
+            else:
 
-    st.error(
-        f"Kunde inte uppdatera kursen med ID {course['id']}."
-    )
+                st.error(
+                    f"Kunde inte uppdatera kursen med "
+                    f"ID {course['id']}."
+                )
 
 else:
 
