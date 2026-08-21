@@ -17,18 +17,6 @@ supabase = create_client(
     st.secrets["SUPABASE_KEY"]
 )
 
-def add_course_to_database(course):
-    supabase.table("courses").insert(course).execute()
-
-def update_course_in_database(course_id, rate):
-    hours = calc_study_hours(rate)
-
-    response = supabase.table("courses").update({
-        "rate": rate,
-        "hours": hours
-    }).eq("id", course_id).execute()
-
-    return response
 
 # --------------------------------------------------
 # Inställningar
@@ -53,6 +41,24 @@ supabase = create_client(
 def calc_study_hours(rate):
     return rate * 40 / 100
 
+def add_course_to_database(course):
+    supabase.table("courses").insert(course).execute()
+
+def update_course_in_database(course_id, rate):
+    hours = calc_study_hours(rate)
+
+    response = (
+        supabase
+        .table("courses")
+        .update({
+            "rate": rate,
+            "hours": hours
+        })
+        .eq("id", course_id)
+        .execute()
+    )
+
+    return response
 
 def calc_total_hours(courses):
     total_hours = 0
