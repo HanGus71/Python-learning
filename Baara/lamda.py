@@ -11,7 +11,7 @@ prices=['$12.50','$10.40','$100.00']
 print(list(map(lambda p: float(p.replace('$','')),prices)))
 
 students = [['Hans',60],
-            ['Lennart', 90],
+            ['Hennart', 90],
             ['Folke',95]]
 print(list(filter(lambda row:row[1]>70,students)))
 print(students[0][1]>70)

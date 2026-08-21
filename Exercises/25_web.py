@@ -8,10 +8,18 @@
 #- Ta bort kurs
 #Föreslagna funktioner: add_course(), calc_study_hours(), show_courses(), calc_total_hours(), find_course(), remove_course(),update_rate(), save_courses(), load_courses(), run_menu()
 #Challenge: Skapa en meny med alternativ för att lägga till, visa, söka, ändra, ta bort och avsluta.
+
+import streamlit as st
+from supabase import create_client
+
 import streamlit as st
 import json
 import os
-
+from supabase import create_client
+supabase = create_client(
+    st.secrets["SUPABASE_URL"],
+    st.secrets["SUPABASE_KEY"]
+)
 
 # --------------------------------------------------
 # Inställningar
@@ -23,6 +31,12 @@ st.set_page_config(
     layout="wide"
 )
 
+supabase = create_client(
+    st.secrets["SUPABASE_URL"],
+    st.secrets["SUPABASE_KEY"]
+)
+
+st.success("Supabase är ansluten!")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILE_PATH = os.path.join(BASE_DIR, "courses.json")
