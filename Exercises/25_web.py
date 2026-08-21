@@ -64,6 +64,18 @@ def update_course_in_database(course_id, rate):
 
     return response
 
+def delete_course_from_database(course_id):
+    response = (
+        supabase
+        .table("courses")
+        .delete()
+        .eq("id", course_id)
+        .execute()
+    )
+
+    return response
+
+
 def calc_total_hours(courses):
     total_hours = 0
 
@@ -390,7 +402,6 @@ if st.session_state.courses:
         key="remove_course"
     )
 
-
     if st.button(
         "🗑️ Ta bort kurs",
         use_container_width=True
@@ -400,25 +411,30 @@ if st.session_state.courses:
 
             if course["course"] == selected_course:
 
-                st.session_state.courses.remove(course)
-
-                save_courses(
-                    st.session_state.courses
+                response = delete_course_from_database(
+                    course["id"]
                 )
 
-                st.success(
-                    f"{selected_course} har tagits bort."
-                )
+                if response.data:
 
-                st.rerun()
+                    st.session_state.courses.remove(course)
+
+                    st.success(
+                        f"{selected_course} har tagits bort."
+                    )
+
+                    st.rerun()
+
+                else:
+
+                    st.error(
+                        f"Kunde inte ta bort kursen "
+                        f"med ID {course['id']}."
+                    )
 
 else:
 
     st.info("Det finns inga kurser att ta bort.")
-
-
-st.divider()
-
 
 # --------------------------------------------------
 # Total
