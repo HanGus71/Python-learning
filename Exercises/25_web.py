@@ -26,7 +26,7 @@ supabase = create_client(
 # --------------------------------------------------
 
 st.set_page_config(
-    page_title="Mitt kursprogram",
+    page_title="Kursplanerare",
     page_icon="📚",
     layout="wide"
 )
