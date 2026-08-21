@@ -12,10 +12,6 @@
 import streamlit as st
 from supabase import create_client
 
-import streamlit as st
-import json
-import os
-from supabase import create_client
 supabase = create_client(
     st.secrets["SUPABASE_URL"],
     st.secrets["SUPABASE_KEY"]
@@ -23,6 +19,14 @@ supabase = create_client(
 
 def add_course_to_database(course):
     supabase.table("courses").insert(course).execute()
+
+def update_course_in_database(course_id, rate):
+    hours = calc_study_hours(rate)
+
+    supabase.table("courses").update({
+        "rate": rate,
+        "hours": hours
+    }).eq("id", course_id).execute()
 
 # --------------------------------------------------
 # Inställningar
@@ -67,9 +71,6 @@ def load_courses():
     return response.data
 
 
-def save_courses(courses):
-    with open(FILE_PATH, "w") as file:
-        json.dump(courses, file, indent=4)
 
 
 # --------------------------------------------------
@@ -333,8 +334,9 @@ if st.session_state.courses:
                 course["rate"] = new_rate
                 course["hours"] = calc_study_hours(new_rate)
 
-                save_courses(
-                    st.session_state.courses
+                update_course_in_database(
+                    course["id"],
+                    new_rate
                 )
 
                 st.success(
